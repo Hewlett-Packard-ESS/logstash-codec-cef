@@ -67,7 +67,7 @@ describe LogStash::Codecs::CEF do
       end 
     end
 
-    let (:escaped_pipes) { 'CEF:0|security|threatmanager|1.0|100|trojan successfully stopped|10|moo=this\|has an escaped pipe' }
+    let (:escaped_pipes) { "CEF:0|security|threatmanager|1.0|100|trojan successfully stopped|10|moo=this\|has an escaped pipe" }
     it "should be OK with escaped pipes in the message" do
       subject.decode(escaped_pipes) do |e|
         ext = e['cef_ext']
@@ -80,6 +80,13 @@ describe LogStash::Codecs::CEF do
       subject.decode(syslog) do |e|
         validate(e)
         insist { e['syslog'] } == 'Syslogdate Sysloghost'
+      end 
+    end
+
+    let (:escaped_equals) { "CEF:0|security|threatmanager|1.0|100|trojan successfully stopped|10| src=10.0.0.192 dst=12.121.122.82 spt=12\=32" }
+    it "Should escaped equals signs in key value pairs" do
+      subject.decode(syslog) do |e|
+        validate(e)
       end 
     end
 
